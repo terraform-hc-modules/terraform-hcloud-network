@@ -7,4 +7,3 @@ output "load_balancer" {
   description = "Load balancer attributes"
   value       = module.network.load_balancer
 }
-

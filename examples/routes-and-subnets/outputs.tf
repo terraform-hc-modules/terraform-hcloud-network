@@ -12,4 +12,3 @@ output "routes" {
   description = "Created routes keyed by index"
   value       = module.network.routes
 }
-

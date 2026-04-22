@@ -7,4 +7,3 @@ output "firewall_id" {
   description = "Firewall id"
   value       = module.network.firewall_id
 }
-

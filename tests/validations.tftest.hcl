@@ -60,4 +60,3 @@ run "rejects_invalid_lb_algorithm" {
     var.load_balancer_algorithm,
   ]
 }
-

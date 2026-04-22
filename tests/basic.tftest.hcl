@@ -36,4 +36,3 @@ run "plan_offline" {
     refresh = false
   }
 }
-

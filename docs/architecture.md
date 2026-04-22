@@ -32,4 +32,3 @@ flowchart TD
 
   LB -. attaches to .-> Net
 ```
-

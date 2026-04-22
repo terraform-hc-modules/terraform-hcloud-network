@@ -12,4 +12,3 @@ output "load_balancer_targets" {
   description = "Created load balancer targets keyed by index"
   value       = module.network.load_balancer_targets
 }
-
