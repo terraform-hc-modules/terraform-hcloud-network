@@ -85,8 +85,8 @@ variable "routes" {
   validation {
     condition = alltrue([
       for r in var.routes : (
-        can(cidrnetmask(r.destination)) &&
-        can(cidrhost(r.gateway, 0))
+        can(cidrhost(r.destination, 0)) &&
+        (can(cidrhost("${r.gateway}/32", 0)) || can(cidrhost("${r.gateway}/128", 0)))
       )
     ])
     error_message = "Each route must have `destination` as a CIDR and `gateway` as a valid IP address."
