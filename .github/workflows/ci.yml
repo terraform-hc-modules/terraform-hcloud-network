@@ -29,20 +29,25 @@ jobs:
         env:
           HCLOUD_TOKEN: dummy
 
-  security:
-    name: Security
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v6
         with:
-          # Without a token the action hits the unauthenticated GitHub API rate
-          # limit and fails while resolving the tfsec release.
-          github_token: ${{ github.token }}
-          additional_args: --exclude-downloaded-modules --minimum-severity MEDIUM
+          tflint_version: latest
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint -f compact --recursive
 
   docs:
     name: Documentation
@@ -52,7 +57,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup terraform-docs
-        uses: jaxxstorm/action-install-gh-release@v3
+        uses: jaxxstorm/action-install-gh-release@v3.0.0
         with:
           repo: terraform-docs/terraform-docs
 
