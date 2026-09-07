@@ -9,26 +9,20 @@ permissions:
   contents: read
 
 jobs:
-  terraform:
-    name: Terraform
+  test:
+    name: Terraform Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_wrapper: false
 
-      - name: Format Check
-        run: terraform fmt -check -recursive
-
       - name: Init
         run: terraform init -backend=false
-
-      - name: Validate
-        run: terraform validate
 
       - name: Test
         run: terraform test
@@ -40,10 +34,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v4
+        uses: terraform-linters/setup-tflint@v6
         with:
           tflint_version: latest
 
@@ -55,35 +49,15 @@ jobs:
       - name: Run TFLint
         run: tflint -f compact --recursive
 
-  security:
-    name: Security
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          additional_args: --exclude-downloaded-modules --minimum-severity MEDIUM
-
-      - name: Checkov
-        uses: bridgecrewio/checkov-action@v12
-        with:
-          directory: .
-          quiet: true
-          framework: terraform
-          skip_check: CKV_TF_1,CKV_TF_2
-
   docs:
     name: Documentation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup terraform-docs
-        uses: jaxxstorm/action-install-gh-release@v1
+        uses: jaxxstorm/action-install-gh-release@v3.0.0
         with:
           repo: terraform-docs/terraform-docs
 

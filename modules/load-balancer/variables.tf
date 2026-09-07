@@ -42,7 +42,7 @@ variable "network_zone" {
   default     = null
 
   validation {
-    condition     = var.network_zone == null || contains(["eu-central", "us-east", "us-west"], var.network_zone)
+    condition     = var.network_zone == null ? true : contains(["eu-central", "us-east", "us-west"], var.network_zone)
     error_message = "If set, `network_zone` must be one of eu-central/us-east/us-west."
   }
 }
@@ -88,7 +88,7 @@ variable "network_id" {
   default     = null
 
   validation {
-    condition     = var.network_id == null || var.network_id > 0
+    condition     = var.network_id == null ? true : var.network_id > 0
     error_message = "If set, `network_id` must be > 0."
   }
 }

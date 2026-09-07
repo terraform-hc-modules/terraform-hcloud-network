@@ -1,0 +1,66 @@
+name: tf-checks
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  complete-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/complete/'
+      provider: none
+
+  firewall-only-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/firewall-only/'
+      provider: none
+
+  firewall-port-range-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/firewall-port-range/'
+      provider: none
+
+  load-balancer-network-zone-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/load-balancer-network-zone/'
+      provider: none
+
+  load-balancer-private-network-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/load-balancer-private-network/'
+      provider: none
+
+  multi-subnet-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/multi-subnet/'
+      provider: none
+
+  private-only-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/private-only/'
+      provider: none
+
+  routes-and-subnets-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/routes-and-subnets/'
+      provider: none
+
+  simple-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/simple/'
+      provider: none
+
+  with-nat-gateway-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/with-nat-gateway/'
+      provider: none

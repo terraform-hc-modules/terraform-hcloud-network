@@ -67,7 +67,7 @@ variable "subnets" {
         can(cidrnetmask(s.ip_range)) &&
         contains(["eu-central", "us-east", "us-west"], s.network_zone) &&
         contains(["cloud", "vswitch"], try(s.type, "cloud")) &&
-        (try(s.vswitch_id, null) == null || try(s.vswitch_id, 0) > 0)
+        (try(s.vswitch_id, null) == null ? true : s.vswitch_id > 0)
       )
     ])
     error_message = "Each subnet must have a valid `ip_range` CIDR; `network_zone` must be one of eu-central/us-east/us-west; `type` must be cloud or vswitch; and `vswitch_id` (if set) must be > 0."
@@ -85,8 +85,8 @@ variable "routes" {
   validation {
     condition = alltrue([
       for r in var.routes : (
-        can(cidrnetmask(r.destination)) &&
-        can(cidrhost(r.gateway, 0))
+        can(cidrhost(r.destination, 0)) &&
+        (can(cidrhost("${r.gateway}/32", 0)) || can(cidrhost("${r.gateway}/128", 0)))
       )
     ])
     error_message = "Each route must have `destination` as a CIDR and `gateway` as a valid IP address."
@@ -109,7 +109,7 @@ variable "firewall_name" {
   default     = null
 
   validation {
-    condition     = var.firewall_name == null || length(trimspace(var.firewall_name)) > 0
+    condition     = var.firewall_name == null ? true : length(trimspace(var.firewall_name)) > 0
     error_message = "If set, `firewall_name` must be a non-empty string."
   }
 }
@@ -178,7 +178,7 @@ variable "load_balancer_name" {
   default     = null
 
   validation {
-    condition     = var.load_balancer_name == null || length(trimspace(var.load_balancer_name)) > 0
+    condition     = var.load_balancer_name == null ? true : length(trimspace(var.load_balancer_name)) > 0
     error_message = "If set, `load_balancer_name` must be a non-empty string."
   }
 }
