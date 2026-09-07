@@ -43,11 +43,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_name"></a> [name](#input\_name) | Name of the firewall. | `string` | n/a | yes |
 | <a name="input_apply_to"></a> [apply\_to](#input\_apply\_to) | Resources to apply the firewall to. | <pre>list(object({<br/>    label_selector = optional(string)<br/>    server         = optional(number)<br/>  }))</pre> | `[]` | no |
 | <a name="input_create"></a> [create](#input\_create) | Whether to create the firewall. | `bool` | `true` | no |
 | <a name="input_inbound_rules"></a> [inbound\_rules](#input\_inbound\_rules) | List of inbound firewall rules. | <pre>list(object({<br/>    description     = optional(string)<br/>    direction       = optional(string, "in")<br/>    protocol        = string<br/>    port            = optional(string)<br/>    source_ips      = optional(list(string), ["0.0.0.0/0", "::/0"])<br/>    destination_ips = optional(list(string))<br/>  }))</pre> | `[]` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | Labels to apply to the firewall. | `map(string)` | `{}` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the firewall. | `string` | n/a | yes |
 | <a name="input_outbound_rules"></a> [outbound\_rules](#input\_outbound\_rules) | List of outbound firewall rules. | <pre>list(object({<br/>    description     = optional(string)<br/>    direction       = optional(string, "out")<br/>    protocol        = string<br/>    port            = optional(string)<br/>    source_ips      = optional(list(string))<br/>    destination_ips = optional(list(string), ["0.0.0.0/0", "::/0"])<br/>  }))</pre> | `[]` | no |
 
 ## Outputs
