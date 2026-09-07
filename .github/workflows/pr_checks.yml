@@ -7,6 +7,10 @@ on:
       - edited
       - synchronize
       - reopened
+      # The shared workflow also requires at least one label, so it has to
+      # re-run when labels change.
+      - labeled
+      - unlabeled
 
 jobs:
   pr-validation:
