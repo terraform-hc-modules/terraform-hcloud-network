@@ -71,7 +71,7 @@ variable "subnets" {
         can(cidrnetmask(s.ip_range)) &&
         contains(["eu-central", "us-east", "us-west"], s.network_zone) &&
         contains(["cloud", "vswitch"], try(s.type, "cloud")) &&
-        (try(s.vswitch_id, null) == null || try(s.vswitch_id, 0) > 0)
+        (try(s.vswitch_id, null) == null ? true : s.vswitch_id > 0)
       )
     ])
     error_message = "Each subnet must have a valid `ip_range` CIDR; `network_zone` must be one of eu-central/us-east/us-west; `type` must be cloud or vswitch; and `vswitch_id` (if set) must be > 0."
