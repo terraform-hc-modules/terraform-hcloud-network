@@ -61,9 +61,24 @@ jobs:
         with:
           repo: terraform-docs/terraform-docs
 
-      - name: Check README
+      - name: Check every README with terraform-docs markers
         run: |
-          if grep -q "BEGIN_TF_DOCS" README.md; then
-            terraform-docs markdown table --output-file README.md --output-mode inject .
-            git diff --exit-code README.md
+          set -euo pipefail
+          config=""
+          if [ -f .terraform-docs.yml ]; then
+            config="$PWD/.terraform-docs.yml"
           fi
+          status=0
+          while IFS= read -r readme; do
+            dir="$(dirname "$readme")"
+            if [ -n "$config" ]; then
+              terraform-docs -c "$config" "$dir" >/dev/null
+            else
+              terraform-docs markdown table --output-file README.md --output-mode inject "$dir" >/dev/null
+            fi
+          done < <(grep -rl BEGIN_TF_DOCS --include=README.md . | grep -v '/\.terraform/')
+          if ! git diff --exit-code; then
+            echo "::error::terraform-docs output is out of date; run terraform-docs and commit the result"
+            status=1
+          fi
+          exit $status

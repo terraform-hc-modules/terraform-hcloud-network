@@ -45,12 +45,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_name"></a> [name](#input\_name) | Name of the network. | `string` | n/a | yes |
 | <a name="input_create"></a> [create](#input\_create) | Whether to create the network. | `bool` | `true` | no |
 | <a name="input_delete_protection"></a> [delete\_protection](#input\_delete\_protection) | Enable delete protection. | `bool` | `false` | no |
 | <a name="input_expose_routes_to_vswitch"></a> [expose\_routes\_to\_vswitch](#input\_expose\_routes\_to\_vswitch) | Enable routing from vSwitch. | `bool` | `false` | no |
 | <a name="input_ip_range"></a> [ip\_range](#input\_ip\_range) | IP range of the network (CIDR notation). | `string` | `"10.0.0.0/16"` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | Labels to apply to the network. | `map(string)` | `{}` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the network. | `string` | n/a | yes |
 | <a name="input_routes"></a> [routes](#input\_routes) | List of routes to create. | <pre>list(object({<br/>    destination = string<br/>    gateway     = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets to create. | <pre>list(object({<br/>    ip_range     = string<br/>    network_zone = string<br/>    type         = optional(string, "cloud")<br/>    vswitch_id   = optional(number)<br/>  }))</pre> | `[]` | no |
 

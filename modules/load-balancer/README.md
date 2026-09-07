@@ -46,6 +46,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_name"></a> [name](#input\_name) | Name of the load balancer. | `string` | n/a | yes |
 | <a name="input_algorithm"></a> [algorithm](#input\_algorithm) | Algorithm for the load balancer (round\_robin or least\_connections). | `string` | `"round_robin"` | no |
 | <a name="input_create"></a> [create](#input\_create) | Whether to create the load balancer. | `bool` | `true` | no |
 | <a name="input_delete_protection"></a> [delete\_protection](#input\_delete\_protection) | Enable delete protection. | `bool` | `false` | no |
@@ -53,7 +54,6 @@ No modules.
 | <a name="input_labels"></a> [labels](#input\_labels) | Labels to apply to the load balancer. | `map(string)` | `{}` | no |
 | <a name="input_load_balancer_type"></a> [load\_balancer\_type](#input\_load\_balancer\_type) | Type of the load balancer. | `string` | `"lb11"` | no |
 | <a name="input_location"></a> [location](#input\_location) | Location of the load balancer. | `string` | `"fsn1"` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name of the load balancer. | `string` | n/a | yes |
 | <a name="input_network_id"></a> [network\_id](#input\_network\_id) | Network ID to attach the load balancer to. | `number` | `null` | no |
 | <a name="input_network_zone"></a> [network\_zone](#input\_network\_zone) | Network zone (alternative to location). | `string` | `null` | no |
 | <a name="input_services"></a> [services](#input\_services) | List of services for the load balancer. | <pre>list(object({<br/>    protocol         = string<br/>    listen_port      = number<br/>    destination_port = number<br/>    proxyprotocol    = optional(bool, false)<br/>    health_check = optional(object({<br/>      protocol = string<br/>      port     = number<br/>      interval = optional(number, 15)<br/>      timeout  = optional(number, 10)<br/>      retries  = optional(number, 3)<br/>      http = optional(object({<br/>        domain       = optional(string)<br/>        path         = optional(string, "/")<br/>        response     = optional(string)<br/>        status_codes = optional(list(string), ["2??", "3??"])<br/>        tls          = optional(bool, false)<br/>      }))<br/>    }))<br/>    http = optional(object({<br/>      sticky_sessions = optional(bool, false)<br/>      cookie_name     = optional(string)<br/>      cookie_lifetime = optional(number)<br/>      certificates    = optional(list(number))<br/>      redirect_http   = optional(bool, false)<br/>    }))<br/>  }))</pre> | `[]` | no |
