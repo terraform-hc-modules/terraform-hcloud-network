@@ -7,6 +7,8 @@ resource "hcloud_load_balancer" "this" {
   network_zone       = var.network_zone
   labels             = var.labels
   delete_protection  = var.delete_protection
+  ipv4_id            = var.ipv4_id
+  ipv6_id            = var.ipv6_id
 
   algorithm {
     type = var.algorithm
@@ -14,11 +16,20 @@ resource "hcloud_load_balancer" "this" {
 }
 
 resource "hcloud_load_balancer_network" "this" {
-  count = var.create && var.network_id != null ? 1 : 0
+  count = var.create && (var.network_id != null || var.subnet_id != null) ? 1 : 0
 
   load_balancer_id        = hcloud_load_balancer.this[0].id
   network_id              = var.network_id
+  subnet_id               = var.subnet_id
+  ip                      = var.network_ip
   enable_public_interface = var.enable_public_interface
+
+  lifecycle {
+    precondition {
+      condition     = var.network_id == null || var.subnet_id == null
+      error_message = "Only one of `network_id` or `subnet_id` may be set."
+    }
+  }
 }
 
 resource "hcloud_load_balancer_service" "this" {

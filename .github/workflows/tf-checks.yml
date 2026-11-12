@@ -11,6 +11,12 @@ jobs:
       working_directory: './examples/complete/'
       provider: none
 
+  firewall-attachment-example:
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
+    with:
+      working_directory: './examples/firewall-attachment/'
+      provider: none
+
   firewall-only-example:
     uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@v2
     with:

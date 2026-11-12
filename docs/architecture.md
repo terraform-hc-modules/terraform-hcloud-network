@@ -7,6 +7,7 @@ This module provides a composable way to create a Hetzner Cloud network (VPC), o
 - **Root module (`../../`)**: Orchestrates the submodules and exposes consistent outputs.
 - **`modules/vpc`**: Creates the `hcloud_network` plus optional subnets and routes.
 - **`modules/firewall`**: Creates an `hcloud_firewall` with inbound/outbound rules.
+- **`modules/firewall-attachment`**: Attaches the firewall to servers or label selectors via `hcloud_firewall_attachment`.
 - **`modules/load-balancer`**: Creates an `hcloud_load_balancer`, optional network attachment, services, and targets.
 
 ## Mermaid diagram

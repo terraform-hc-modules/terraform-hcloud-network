@@ -93,6 +93,50 @@ variable "network_id" {
   }
 }
 
+variable "subnet_id" {
+  description = "Subnet ID to attach the load balancer to (format <network_id>-<ip_range>). Mutually exclusive with `network_id`."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.subnet_id == null ? true : length(trimspace(var.subnet_id)) > 0
+    error_message = "If set, `subnet_id` must be a non-empty string."
+  }
+}
+
+variable "network_ip" {
+  description = "Private IP to assign to the load balancer in the network. Computed by Hetzner if null."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.network_ip == null ? true : can(cidrhost("${var.network_ip}/32", 0))
+    error_message = "If set, `network_ip` must be a valid IPv4 address."
+  }
+}
+
+variable "ipv4_id" {
+  description = "ID of an existing IPv4 Primary IP to assign to the load balancer. Requires hcloud provider >= 1.70."
+  type        = number
+  default     = null
+
+  validation {
+    condition     = var.ipv4_id == null ? true : var.ipv4_id > 0
+    error_message = "If set, `ipv4_id` must be > 0."
+  }
+}
+
+variable "ipv6_id" {
+  description = "ID of an existing IPv6 Primary IP to assign to the load balancer. Requires hcloud provider >= 1.70."
+  type        = number
+  default     = null
+
+  validation {
+    condition     = var.ipv6_id == null ? true : var.ipv6_id > 0
+    error_message = "If set, `ipv6_id` must be > 0."
+  }
+}
+
 variable "enable_public_interface" {
   description = "Enable public interface."
   type        = bool

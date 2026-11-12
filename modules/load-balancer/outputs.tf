@@ -29,6 +29,8 @@ output "load_balancer" {
     labels             = hcloud_load_balancer.this[0].labels
     ipv4               = hcloud_load_balancer.this[0].ipv4
     ipv6               = hcloud_load_balancer.this[0].ipv6
+    ipv4_id            = hcloud_load_balancer.this[0].ipv4_id
+    ipv6_id            = hcloud_load_balancer.this[0].ipv6_id
     delete_protection  = hcloud_load_balancer.this[0].delete_protection
     algorithm          = try(hcloud_load_balancer.this[0].algorithm[0].type, null)
   }, null)
@@ -49,6 +51,7 @@ output "network_attachment" {
   value = try({
     load_balancer_id        = hcloud_load_balancer_network.this[0].load_balancer_id
     network_id              = hcloud_load_balancer_network.this[0].network_id
+    subnet_id               = hcloud_load_balancer_network.this[0].subnet_id
     ip                      = hcloud_load_balancer_network.this[0].ip
     enable_public_interface = hcloud_load_balancer_network.this[0].enable_public_interface
   }, null)

@@ -162,6 +162,28 @@ variable "outbound_rules" {
   }
 }
 
+variable "firewall_server_ids" {
+  description = "Server IDs to attach the firewall to via hcloud_firewall_attachment. Requires create_firewall."
+  type        = set(number)
+  default     = []
+
+  validation {
+    condition     = alltrue([for id in var.firewall_server_ids : id > 0])
+    error_message = "Each `firewall_server_ids` entry must be > 0."
+  }
+}
+
+variable "firewall_label_selectors" {
+  description = "Label selectors whose servers get the firewall via hcloud_firewall_attachment. Requires create_firewall."
+  type        = set(string)
+  default     = []
+
+  validation {
+    condition     = alltrue([for s in var.firewall_label_selectors : length(trimspace(s)) > 0])
+    error_message = "Each `firewall_label_selectors` entry must be a non-empty string."
+  }
+}
+
 ################################################################################
 # Load Balancer
 ################################################################################
@@ -280,5 +302,49 @@ variable "load_balancer_targets" {
       )
     ])
     error_message = "Each load balancer target must have type server/label_selector/ip and provide the corresponding attribute (server_id, label_selector, or ip)."
+  }
+}
+
+variable "load_balancer_subnet_id" {
+  description = "Subnet ID to attach the load balancer to (format <network_id>-<ip_range>). When set, it is used instead of the VPC network ID."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.load_balancer_subnet_id == null ? true : length(trimspace(var.load_balancer_subnet_id)) > 0
+    error_message = "If set, `load_balancer_subnet_id` must be a non-empty string."
+  }
+}
+
+variable "load_balancer_network_ip" {
+  description = "Private IP to assign to the load balancer in the network. Computed by Hetzner if null."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.load_balancer_network_ip == null ? true : can(cidrhost("${var.load_balancer_network_ip}/32", 0))
+    error_message = "If set, `load_balancer_network_ip` must be a valid IPv4 address."
+  }
+}
+
+variable "load_balancer_ipv4_id" {
+  description = "ID of an existing IPv4 Primary IP to assign to the load balancer."
+  type        = number
+  default     = null
+
+  validation {
+    condition     = var.load_balancer_ipv4_id == null ? true : var.load_balancer_ipv4_id > 0
+    error_message = "If set, `load_balancer_ipv4_id` must be > 0."
+  }
+}
+
+variable "load_balancer_ipv6_id" {
+  description = "ID of an existing IPv6 Primary IP to assign to the load balancer."
+  type        = number
+  default     = null
+
+  validation {
+    condition     = var.load_balancer_ipv6_id == null ? true : var.load_balancer_ipv6_id > 0
+    error_message = "If set, `load_balancer_ipv6_id` must be > 0."
   }
 }
