@@ -1,3 +1,17 @@
+## [0.4.0](https://github.com/terraform-hc-modules/terraform-hcloud-network/compare/v0.3.3...v0.4.0) (2026-11-13)
+
+### Breaking changes
+
+* hcloud provider floor for the root module, wrappers and `modules/load-balancer` is now `>= 1.70`
+
+### Features
+
+* `modules/load-balancer`: `ipv4_id` / `ipv6_id` (attach existing Primary IPs), `subnet_id` and `network_ip`
+* new `modules/firewall-attachment` for `hcloud_firewall_attachment`; root inputs `firewall_server_ids` and `firewall_label_selectors`
+* `examples/firewall-attachment`
+
+[#9](https://github.com/terraform-hc-modules/terraform-hcloud-network/pull/9), closes [#8](https://github.com/terraform-hc-modules/terraform-hcloud-network/issues/8)
+
 ## [0.3.1](https://github.com/terraform-hc-modules/terraform-hcloud-network/compare/v0.3.0...v0.3.1) (2026-04-20)
 
 
