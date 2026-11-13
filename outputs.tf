@@ -61,6 +61,11 @@ output "firewall" {
   value       = module.firewall.firewall
 }
 
+output "firewall_attachment" {
+  description = "Firewall attachment attributes."
+  value       = module.firewall_attachment.firewall_attachment
+}
+
 ################################################################################
 # Load Balancer
 ################################################################################

@@ -1,6 +1,6 @@
 # Hetzner Cloud Network Module
 
-[![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.0-blueviolet)](https://www.terraform.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.10-blueviolet)](https://www.terraform.io/)
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL--2.0-blue.svg)](https://opensource.org/licenses/MPL-2.0)
 [![CI](https://github.com/terraform-hc-modules/terraform-hcloud-network/actions/workflows/ci.yml/badge.svg)](https://github.com/terraform-hc-modules/terraform-hcloud-network/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/terraform-hc-modules/terraform-hcloud-network)](https://github.com/terraform-hc-modules/terraform-hcloud-network/releases)
@@ -90,6 +90,7 @@ module "lb" {
 |--------|-------------|
 | [vpc](modules/vpc) | Network, subnets, and routes |
 | [firewall](modules/firewall) | Firewall and rules |
+| [firewall-attachment](modules/firewall-attachment) | Attach a firewall to servers or label selectors |
 | [load-balancer](modules/load-balancer) | Load balancer, services, and targets |
 
 ## Examples
@@ -97,6 +98,7 @@ module "lb" {
 - [Simple](examples/simple) - VPC only
 - [Complete](examples/complete) - VPC + Firewall + Load Balancer
 - [Firewall Only](examples/firewall-only) - Standalone firewall
+- [Firewall Attachment](examples/firewall-attachment) - Firewall attached to servers by label selector
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -104,7 +106,7 @@ module "lb" {
 | Name | Version |
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.10.0 |
-| <a name="requirement_hcloud"></a> [hcloud](#requirement\_hcloud) | >= 1.45 |
+| <a name="requirement_hcloud"></a> [hcloud](#requirement\_hcloud) | >= 1.70 |
 
 ## Providers
 
@@ -115,6 +117,7 @@ No providers.
 | Name | Source | Version |
 | ---- | ------ | ------- |
 | <a name="module_firewall"></a> [firewall](#module\_firewall) | ./modules/firewall | n/a |
+| <a name="module_firewall_attachment"></a> [firewall\_attachment](#module\_firewall\_attachment) | ./modules/firewall-attachment | n/a |
 | <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | ./modules/load-balancer | n/a |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/vpc | n/a |
 
@@ -130,14 +133,20 @@ No resources.
 | <a name="input_create_firewall"></a> [create\_firewall](#input\_create\_firewall) | Whether to create the firewall. | `bool` | `false` | no |
 | <a name="input_create_load_balancer"></a> [create\_load\_balancer](#input\_create\_load\_balancer) | Whether to create the load balancer. | `bool` | `false` | no |
 | <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Whether to create the VPC. | `bool` | `true` | no |
+| <a name="input_firewall_label_selectors"></a> [firewall\_label\_selectors](#input\_firewall\_label\_selectors) | Label selectors whose servers get the firewall via hcloud\_firewall\_attachment. Requires create\_firewall. | `set(string)` | `[]` | no |
 | <a name="input_firewall_name"></a> [firewall\_name](#input\_firewall\_name) | Name of the firewall. Defaults to name-firewall. | `string` | `null` | no |
+| <a name="input_firewall_server_ids"></a> [firewall\_server\_ids](#input\_firewall\_server\_ids) | Server IDs to attach the firewall to via hcloud\_firewall\_attachment. Requires create\_firewall. | `set(number)` | `[]` | no |
 | <a name="input_inbound_rules"></a> [inbound\_rules](#input\_inbound\_rules) | List of inbound firewall rules. | <pre>list(object({<br/>    description     = optional(string)<br/>    protocol        = string<br/>    port            = optional(string)<br/>    source_ips      = optional(list(string), ["0.0.0.0/0", "::/0"])<br/>    destination_ips = optional(list(string))<br/>  }))</pre> | `[]` | no |
 | <a name="input_ip_range"></a> [ip\_range](#input\_ip\_range) | IP range of the network. | `string` | `"10.0.0.0/16"` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | Labels to apply to all resources. | `map(string)` | `{}` | no |
 | <a name="input_load_balancer_algorithm"></a> [load\_balancer\_algorithm](#input\_load\_balancer\_algorithm) | Algorithm for the load balancer. | `string` | `"round_robin"` | no |
+| <a name="input_load_balancer_ipv4_id"></a> [load\_balancer\_ipv4\_id](#input\_load\_balancer\_ipv4\_id) | ID of an existing IPv4 Primary IP to assign to the load balancer. | `number` | `null` | no |
+| <a name="input_load_balancer_ipv6_id"></a> [load\_balancer\_ipv6\_id](#input\_load\_balancer\_ipv6\_id) | ID of an existing IPv6 Primary IP to assign to the load balancer. | `number` | `null` | no |
 | <a name="input_load_balancer_location"></a> [load\_balancer\_location](#input\_load\_balancer\_location) | Location of the load balancer. | `string` | `"fsn1"` | no |
 | <a name="input_load_balancer_name"></a> [load\_balancer\_name](#input\_load\_balancer\_name) | Name of the load balancer. Defaults to name-lb. | `string` | `null` | no |
+| <a name="input_load_balancer_network_ip"></a> [load\_balancer\_network\_ip](#input\_load\_balancer\_network\_ip) | Private IP to assign to the load balancer in the network. Computed by Hetzner if null. | `string` | `null` | no |
 | <a name="input_load_balancer_services"></a> [load\_balancer\_services](#input\_load\_balancer\_services) | List of services for the load balancer. | <pre>list(object({<br/>    protocol         = string<br/>    listen_port      = number<br/>    destination_port = number<br/>    proxyprotocol    = optional(bool, false)<br/>    health_check = optional(object({<br/>      protocol = string<br/>      port     = number<br/>      interval = optional(number, 15)<br/>      timeout  = optional(number, 10)<br/>      retries  = optional(number, 3)<br/>      http = optional(object({<br/>        domain       = optional(string)<br/>        path         = optional(string, "/")<br/>        response     = optional(string)<br/>        status_codes = optional(list(string), ["2??", "3??"])<br/>        tls          = optional(bool, false)<br/>      }))<br/>    }))<br/>    http = optional(object({<br/>      sticky_sessions = optional(bool, false)<br/>      cookie_name     = optional(string)<br/>      cookie_lifetime = optional(number)<br/>      certificates    = optional(list(number))<br/>      redirect_http   = optional(bool, false)<br/>    }))<br/>  }))</pre> | `[]` | no |
+| <a name="input_load_balancer_subnet_id"></a> [load\_balancer\_subnet\_id](#input\_load\_balancer\_subnet\_id) | Subnet ID to attach the load balancer to (format <network\_id>-<ip\_range>). When set, it is used instead of the VPC network ID. | `string` | `null` | no |
 | <a name="input_load_balancer_targets"></a> [load\_balancer\_targets](#input\_load\_balancer\_targets) | List of targets for the load balancer. | <pre>list(object({<br/>    type           = string<br/>    server_id      = optional(number)<br/>    label_selector = optional(string)<br/>    ip             = optional(string)<br/>    use_private_ip = optional(bool, false)<br/>  }))</pre> | `[]` | no |
 | <a name="input_load_balancer_type"></a> [load\_balancer\_type](#input\_load\_balancer\_type) | Type of the load balancer. | `string` | `"lb11"` | no |
 | <a name="input_outbound_rules"></a> [outbound\_rules](#input\_outbound\_rules) | List of outbound firewall rules. | <pre>list(object({<br/>    description     = optional(string)<br/>    protocol        = string<br/>    port            = optional(string)<br/>    source_ips      = optional(list(string))<br/>    destination_ips = optional(list(string), ["0.0.0.0/0", "::/0"])<br/>  }))</pre> | `[]` | no |
@@ -149,6 +158,7 @@ No resources.
 | Name | Description |
 | ---- | ----------- |
 | <a name="output_firewall"></a> [firewall](#output\_firewall) | Firewall attributes. |
+| <a name="output_firewall_attachment"></a> [firewall\_attachment](#output\_firewall\_attachment) | Firewall attachment attributes. |
 | <a name="output_firewall_id"></a> [firewall\_id](#output\_firewall\_id) | ID of the firewall. |
 | <a name="output_firewall_name"></a> [firewall\_name](#output\_firewall\_name) | Name of the firewall. |
 | <a name="output_ip_range"></a> [ip\_range](#output\_ip\_range) | IP range of the network. |

@@ -29,6 +29,16 @@ module "firewall" {
   outbound_rules = var.outbound_rules
 }
 
+module "firewall_attachment" {
+  source = "./modules/firewall-attachment"
+
+  create = var.create_firewall && (length(var.firewall_server_ids) > 0 || length(var.firewall_label_selectors) > 0)
+
+  firewall_id     = module.firewall.firewall_id
+  server_ids      = var.firewall_server_ids
+  label_selectors = var.firewall_label_selectors
+}
+
 ################################################################################
 # Load Balancer
 ################################################################################
@@ -43,7 +53,11 @@ module "load_balancer" {
   location           = var.load_balancer_location
   labels             = var.labels
   algorithm          = var.load_balancer_algorithm
-  network_id         = var.create_vpc ? module.vpc.network_id : null
+  network_id         = var.create_vpc && var.load_balancer_subnet_id == null ? module.vpc.network_id : null
+  subnet_id          = var.load_balancer_subnet_id
+  network_ip         = var.load_balancer_network_ip
+  ipv4_id            = var.load_balancer_ipv4_id
+  ipv6_id            = var.load_balancer_ipv6_id
   services           = var.load_balancer_services
   targets            = var.load_balancer_targets
 }
